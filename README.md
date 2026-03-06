@@ -35,10 +35,32 @@ Calibre uses SQLite (`metadata.db`), but SQLite + cloud sync = corruption risk. 
 
 Same web codebase across all platforms — the [Obsidian model](https://obsidian.md/).
 
+## Current Status
+
+The OPF metadata parser is implemented and tested. Everything else is scaffolded but not yet functional.
+
+| Component       | Status   | Description                                           |
+| --------------- | -------- | ----------------------------------------------------- |
+| OPF parser      | Done     | Parses all Calibre metadata.opf fields (see below)    |
+| Library scanner | Stub     | Will walk Calibre folder structure to discover books  |
+| Sidecar R/W     | Stub     | Will read/write per-book JSON sidecars                |
+| EPUB reader     | Stub     | Will wrap epub.js for rendering and position tracking |
+| UI shell        | Scaffold | Vite + React app shell, no routes yet                 |
+
+### OPF Parser
+
+Parses Calibre's `metadata.opf` (Dublin Core + Calibre extensions) using `fast-xml-parser`:
+
+- **Core:** title, authors (with role filtering), description (HTML)
+- **Extended:** series, series index, tags, publisher, languages, rating (normalized 0-5), publication date
+- **Identifiers:** ISBN, AMAZON, GOODREADS, GOOGLE, MOBI-ASIN, etc. as `Record<string, string>`; UUID extracted separately
+- **Cover detection:** `<guide>` reference (preferred) with `<manifest>` item fallback
+
 ## Tech Stack
 
 - **TypeScript** (strict mode) + **React 19** + **Vite 6**
 - **epub.js** for EPUB rendering and CFI-based position tracking
+- **fast-xml-parser** for cross-environment OPF/XML parsing
 - **Vitest** for testing
 - **ESLint 9** + **Prettier 3** for linting/formatting
 
@@ -82,13 +104,13 @@ src/
 │   └── book.ts              Core types: BookMetadata, ReadingState, Annotation
 ├── lib/
 │   ├── calibre/
-│   │   ├── parse-opf.ts     Calibre metadata.opf parser
-│   │   └── scan-library.ts  Calibre folder structure scanner
+│   │   ├── parse-opf.ts     Calibre metadata.opf parser ✓
+│   │   └── scan-library.ts  Calibre folder structure scanner (stub)
 │   ├── reader/
-│   │   └── epub-reader.ts   epub.js wrapper
+│   │   └── epub-reader.ts   epub.js wrapper (stub)
 │   └── sync/
-│       ├── reading-state.ts  tomo-reading-state.json R/W
-│       └── annotations.ts    tomo-annotations.json R/W
+│       ├── reading-state.ts  tomo-reading-state.json R/W (stub)
+│       └── annotations.ts    tomo-annotations.json R/W (stub)
 └── __tests__/               Test files
     └── fixtures/            Test data (sample OPF files, etc.)
 ```

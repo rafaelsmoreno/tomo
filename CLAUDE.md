@@ -13,6 +13,7 @@ Roadmap and current progress are tracked in `TOMO-SESSION.md` (gitignored). Read
 - **No speculation.** State only what is grounded in checked facts, documents, or sources. If you cannot verify, say so. Do not guess. Exception: when the user explicitly asks for speculation, offer hypotheses and label them as such.
 - **Structural solutions over workarounds.** Prefer fixing root cause or integrating properly over one-off scripts or manual steps, unless the user explicitly asks for a workaround.
 - **Never contribute to repos other than the user's.** Do not push to or open PRs to repositories other than `https://github.com/rafaelsmoreno/...` unless the user explicitly requests it.
+- **README always up to date.** When the scope, approach, architecture, or data model changes, update `README.md` in the same commit or PR. The README is the source of truth for what the project does and how — it must never describe a stale or superseded design.
 
 ## Effectiveness Over Helpfulness
 
@@ -57,6 +58,8 @@ When implementing multi-step work: apply every mandatory process gate (testing, 
 - After pushing, open a PR automatically (do not ask the user to do it).
 - Keep PRs small: one PR = one feature/fix.
 - Clear descriptions linking to the feature number from the roadmap.
+- **Never merge without approval.** The workflow is: commit → push → open PR → wait for PR review/approval → merge. Do not merge PRs autonomously. Do not ask whether to merge — wait for the user to approve or request the merge.
+- **Never start the next feature until the current PR is merged.** One feature in flight at a time.
 
 ### Post-Merge Hygiene
 
