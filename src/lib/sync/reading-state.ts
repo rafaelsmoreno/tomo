@@ -1,8 +1,8 @@
 /**
- * Reading state sidecar manager.
+ * Reading state manager.
  *
- * Reads and writes `tomo-reading-state.json` files
- * alongside each book in the Calibre library.
+ * Reads and writes `.tomo/reading-state/<uuid>.json` files
+ * at the Calibre library root.
  *
  * TODO: Implement read/write logic
  */

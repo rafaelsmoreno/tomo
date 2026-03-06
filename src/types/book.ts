@@ -1,8 +1,8 @@
 /**
  * Core type definitions for Tomo.
  *
- * These types represent the flat-file sidecar data model.
- * All syncable state lives in JSON files next to each book.
+ * Reading state and annotations are stored as UUID-keyed JSON files
+ * in `.tomo/` at the Calibre library root (not per-book sidecars).
  */
 
 /** Book metadata parsed from Calibre's metadata.opf or folder structure */
@@ -44,7 +44,7 @@ export interface BookMetadata {
 }
 
 /**
- * Reading state sidecar — stored as `tomo-reading-state.json` next to each book.
+ * Reading state — stored as `.tomo/reading-state/<uuid>.json`.
  * This is the primary sync payload.
  */
 export interface ReadingState {
@@ -95,7 +95,7 @@ export interface Annotation {
 }
 
 /**
- * Annotations sidecar — stored as `tomo-annotations.json` next to each book.
+ * Annotations file — stored as `.tomo/annotations/<uuid>.json`.
  */
 export interface AnnotationsFile {
   /** Schema version for forward compatibility */

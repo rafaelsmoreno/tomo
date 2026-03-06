@@ -13,6 +13,7 @@ Roadmap and current progress are tracked in `TOMO-SESSION.md` (gitignored). Read
 - **No speculation.** State only what is grounded in checked facts, documents, or sources. If you cannot verify, say so. Do not guess. Exception: when the user explicitly asks for speculation, offer hypotheses and label them as such.
 - **Structural solutions over workarounds.** Prefer fixing root cause or integrating properly over one-off scripts or manual steps, unless the user explicitly asks for a workaround.
 - **Never contribute to repos other than the user's.** Do not push to or open PRs to repositories other than `https://github.com/rafaelsmoreno/...` unless the user explicitly requests it.
+- **README always up to date.** When the scope, approach, architecture, or data model changes, update `README.md` in the same commit or PR. The README is the source of truth for what the project does and how — it must never describe a stale or superseded design.
 
 ## Effectiveness Over Helpfulness
 
@@ -57,6 +58,8 @@ When implementing multi-step work: apply every mandatory process gate (testing, 
 - After pushing, open a PR automatically (do not ask the user to do it).
 - Keep PRs small: one PR = one feature/fix.
 - Clear descriptions linking to the feature number from the roadmap.
+- **Never merge without approval.** The workflow is: commit → push → open PR → wait for PR review/approval → merge. Do not merge PRs autonomously. Do not ask whether to merge — wait for the user to approve or request the merge.
+- **Never start the next feature until the current PR is merged.** One feature in flight at a time.
 
 ### Post-Merge Hygiene
 
@@ -75,8 +78,45 @@ At session start, surface the current branch. Do not run `git checkout`/`git swi
 
 - **`TOMO-SESSION.md`** tracks progress, completed features, current wave/feature, decisions, and next steps.
 - Read it at the start of every new session when the user asks to resume.
-- Update it before a session ends or when the user asks for a handoff summary.
 - When the conversation is getting long/heavy on tokens, warn the user and suggest wrapping up with an updated session file.
+
+### Mandatory Update Triggers
+
+`TOMO-SESSION.md` must be updated **immediately** (in the same response, not deferred) when any of these events occur:
+
+| #   | Event                                                               | What to update                                                             |
+| --- | ------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| 1   | Architectural or data model decision is made or changed             | Decisions Made section — full rationale, not just the conclusion           |
+| 2   | A commit is created                                                 | Completed/In Progress sections — commit hash, PR number                    |
+| 3   | A PR is merged                                                      | Move from In Progress to Completed; update Current Status and Next Session |
+| 4   | A feature is started                                                | In Progress section; Current Status                                        |
+| 5   | A scope or approach change is discussed (even if not yet finalized) | Open Questions section (new) — record the discussion and options           |
+| 6   | Session is ending or context is getting heavy                       | Full refresh of all sections                                               |
+
+"Update before session ends" is a fallback, not the primary mechanism. The primary mechanism is event-driven updates on every state change.
+
+### Session File Structure
+
+`TOMO-SESSION.md` must always contain these sections in this order:
+
+1. **Last Updated** — date
+2. **Current Status** — wave, feature number, what's in flight
+3. **Completed** — ordered list with commit hashes and PR numbers
+4. **In Progress** — current work with branch name
+5. **Decisions Made** — every architectural, data model, or approach decision with rationale (this is the most critical section — a lost decision here means a lost decision everywhere)
+6. **Open Questions** — unresolved discussions, options being evaluated
+7. **Roadmap Summary** — full wave/feature list
+8. **Next Session: Start Here** — exact pickup instructions
+9. **Process Rules** — meta-rules about how this file is maintained
+
+### Violation-Triggered Response
+
+When a session continuity failure is identified (stale decision, lost context, contradicted architecture):
+
+1. State the failure directly — what was lost, when it likely happened
+2. Fix all affected artifacts (session file, README, types, code comments) in the same response
+3. Add or strengthen the process rule that would have prevented it
+4. "I'll be more careful next time" is not an acceptable response — produce a structural fix
 
 ## Red Flag Checklist
 
@@ -87,6 +127,7 @@ Run this audit before finalizing any response. If any flag fires, act on it.
 3. **The Sycophancy Trap** — Are you using filler phrases or avoiding a difficult truth? Delete the filler. State problems directly.
 4. **The Vanity Metric** — Are you rushing to "complete a task" despite knowing the logic is flawed or untested? Halt and fix the foundation first.
 5. **The False Binary** — Are you simplifying a complex problem into Either/Or? Present the spectrum.
+6. **The Prevention-Only Lens** — Are you classifying a rule as unenforceable because you only considered prevention? Consider detection too. A pre-commit check, a session-start audit, a diff review — these are all enforcement mechanisms even if they fire after the fact.
 
 ## Response Style
 
