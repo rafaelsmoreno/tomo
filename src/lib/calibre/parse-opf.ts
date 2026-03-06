@@ -12,10 +12,19 @@
 import { XMLParser } from "fast-xml-parser";
 import type { BookMetadata } from "@/types/book";
 
-/** Fields extracted by parseOpf (core fields for Feature #2) */
+/** Fields extracted by parseOpf (core + extended fields, Features #2-#3) */
 export type ParsedOpfCore = Pick<
   BookMetadata,
-  "title" | "authors" | "description"
+  | "title"
+  | "authors"
+  | "description"
+  | "series"
+  | "seriesIndex"
+  | "tags"
+  | "publisher"
+  | "languages"
+  | "rating"
+  | "pubdate"
 >;
 
 /**
@@ -35,6 +44,7 @@ const parser = new XMLParser({
       jpath === "package.metadata.dc:creator" ||
       jpath === "package.metadata.dc:subject" ||
       jpath === "package.metadata.dc:identifier" ||
+      jpath === "package.metadata.dc:language" ||
       jpath === "package.metadata.meta"
     );
   },
@@ -95,7 +105,73 @@ export function parseOpf(xml: string): ParsedOpfCore {
   const rawDesc = metadata["dc:description"];
   const description = extractText(rawDesc) || undefined;
 
-  return { title, authors, description };
+  // --- Tags (dc:subject) ---
+  const subjects: any[] = metadata["dc:subject"] ?? [];
+  const tags: string[] = [];
+  for (const subject of subjects) {
+    const text = extractText(subject);
+    if (text) {
+      tags.push(text);
+    }
+  }
+
+  // --- Publisher ---
+  const publisher = extractText(metadata["dc:publisher"]) || undefined;
+
+  // --- Languages ---
+  const rawLangs: any[] = metadata["dc:language"] ?? [];
+  const languages: string[] = [];
+  for (const lang of rawLangs) {
+    const text = extractText(lang);
+    if (text) languages.push(text);
+  }
+
+  // --- Pubdate (dc:date) ---
+  const pubdate = extractText(metadata["dc:date"]) || undefined;
+
+  // --- Calibre meta elements (series, seriesIndex, rating) ---
+  const metas: any[] = metadata["meta"] ?? [];
+
+  let series: string | undefined;
+  let seriesIndex: number | undefined;
+  let rating: number | undefined;
+
+  for (const meta of metas) {
+    if (typeof meta !== "object" || meta === null) continue;
+    const name: string | undefined = meta["@_name"];
+    const content: string | undefined = meta["@_content"];
+    if (!name || content == null) continue;
+
+    switch (name) {
+      case "calibre:series":
+        series = content || undefined;
+        break;
+      case "calibre:series_index": {
+        const parsed = parseFloat(content);
+        if (!isNaN(parsed)) seriesIndex = parsed;
+        break;
+      }
+      case "calibre:rating": {
+        // Calibre stores rating as 0-10 (2 per star); normalize to 0-5
+        const parsed = parseFloat(content);
+        if (!isNaN(parsed)) rating = parsed / 2;
+        break;
+      }
+    }
+  }
+
+  return {
+    title,
+    authors,
+    description,
+    series,
+    seriesIndex,
+    tags,
+    publisher,
+    languages,
+    rating,
+    pubdate,
+  };
 }
 
 /**
