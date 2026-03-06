@@ -47,3 +47,6 @@ coverage/
 
 # Calibre library (mounted, not committed)
 test-library/
+
+# Session state (AI assistant context between sessions)
+TOMO-SESSION.md
