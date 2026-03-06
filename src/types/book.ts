@@ -33,6 +33,8 @@ export interface BookMetadata {
   identifiers: Record<string, string>;
   /** Whether cover.jpg exists */
   hasCover: boolean;
+  /** Cover image href from OPF (guide reference or manifest item) */
+  coverHref?: string;
   /** Relative path within Calibre library */
   path: string;
   /** Available formats (e.g., ["EPUB", "PDF"]) */
