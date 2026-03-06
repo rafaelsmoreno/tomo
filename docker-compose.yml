@@ -1,0 +1,20 @@
+services:
+  tomo-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      # Mount source for hot reload
+      - .:/app
+      # Preserve node_modules from container (don't overwrite with host's)
+      - /app/node_modules
+      # Mount a test Calibre library (optional — create your own or symlink)
+      # Uncomment and point to your actual library:
+      # - /path/to/your/Calibre Library:/library:ro
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+
+  # Future: add Tauri build container, Capacitor build, etc.

@@ -1,0 +1,10 @@
+node_modules
+dist
+dist-ssr
+src-tauri/target
+android/.gradle
+android/app/build
+.git
+*.log
+.docker-data
+test-library

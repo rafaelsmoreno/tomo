@@ -1,0 +1,49 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-ssr/
+
+# Tauri
+src-tauri/target/
+
+# Capacitor
+android/.gradle/
+android/app/build/
+android/build/
+ios/App/Pods/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Test
+coverage/
+
+# Docker
+.docker-data/
+
+# Local dev database (rebuilt from flat files)
+*.sqlite
+*.db
+!src/**/*.db
+
+# Calibre library (mounted, not committed)
+test-library/
