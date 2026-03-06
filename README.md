@@ -8,22 +8,39 @@ No reader app exists that reads EPUBs from a Calibre library folder and syncs re
 
 ## The Solution
 
-Tomo reads your Calibre library directly and stores reading state as JSON sidecar files next to each book. Any cloud drive (Google Drive, Dropbox, Syncthing, OneDrive) syncs them automatically. No server required.
+Tomo reads your Calibre library directly and stores all reading state in a `.tomo/` directory at the library root, keyed by each book's UUID. Any cloud drive (Google Drive, Dropbox, Syncthing, OneDrive) syncs the entire library folder — including `.tomo/` — automatically. No server required.
 
 ```
 Calibre Library/
+├── .tomo/                                          ← Tomo creates this
+│   ├── reading-state/
+│   │   ├── a1b2c3d4-e5f6-7890-abcd-ef1234567890.json
+│   │   └── f7bac407-648d-4bed-bc86-51a51a0df9fe.json
+│   └── annotations/
+│       ├── a1b2c3d4-e5f6-7890-abcd-ef1234567890.json
+│       └── f7bac407-648d-4bed-bc86-51a51a0df9fe.json
 ├── Author Name/
 │   └── Book Title (123)/
 │       ├── Book Title.epub
 │       ├── metadata.opf              ← Calibre creates this
-│       ├── cover.jpg                 ← Calibre creates this
-│       ├── tomo-reading-state.json   ← Tomo creates this
-│       └── tomo-annotations.json     ← Tomo creates this
+│       └── cover.jpg                 ← Calibre creates this
+└── metadata.db
 ```
+
+### Why `.tomo/` at Library Root, Not Per-Book Sidecars
+
+The original design placed JSON files inside each book's directory. This is unsafe: when you edit a book's title or author in Calibre, it renames the directory by creating a new one, copying only files it tracks (epub, opf, cover), and deleting the old directory. Any extra files — including Tomo sidecars — are silently destroyed.
+
+The `.tomo/` approach solves this:
+
+- **UUID-keyed** — book identity doesn't change when Calibre renames directories
+- **Library root is safe** — Calibre never auto-deletes unknown root-level directories (verified from source: `set_path`, `update_path`, `remove_books`, `move_library_to`, `restore.py`)
+- **One folder syncs everything** — `.tomo/` lives inside the Calibre library folder, so existing cloud drive sync covers it
+- **Small JSON files** (< 1KB each) sync efficiently with zero conflict risk
 
 ### Why Flat Files, Not a Database
 
-Calibre uses SQLite (`metadata.db`), but SQLite + cloud sync = corruption risk. Cloud services sync files, not database transactions. Per-book JSON sidecars are tiny (< 1KB), sync instantly, and have virtually zero conflict risk since you only read on one device at a time.
+Calibre uses SQLite (`metadata.db`), but SQLite + cloud sync = corruption risk. Cloud services sync files, not database transactions. UUID-keyed JSON files are tiny, sync instantly, and have virtually zero conflict risk since you only read on one device at a time.
 
 ## Platforms
 
@@ -43,7 +60,7 @@ The OPF metadata parser is implemented and tested. Everything else is scaffolded
 | --------------- | -------- | ----------------------------------------------------- |
 | OPF parser      | Done     | Parses all Calibre metadata.opf fields (see below)    |
 | Library scanner | Stub     | Will walk Calibre folder structure to discover books  |
-| Sidecar R/W     | Stub     | Will read/write per-book JSON sidecars                |
+| Sidecar R/W     | Stub     | Will read/write `.tomo/` JSON state files             |
 | EPUB reader     | Stub     | Will wrap epub.js for rendering and position tracking |
 | UI shell        | Scaffold | Vite + React app shell, no routes yet                 |
 
@@ -109,15 +126,15 @@ src/
 │   ├── reader/
 │   │   └── epub-reader.ts   epub.js wrapper (stub)
 │   └── sync/
-│       ├── reading-state.ts  tomo-reading-state.json R/W (stub)
-│       └── annotations.ts    tomo-annotations.json R/W (stub)
+│       ├── reading-state.ts  .tomo/reading-state/<uuid>.json R/W (stub)
+│       └── annotations.ts    .tomo/annotations/<uuid>.json R/W (stub)
 └── __tests__/               Test files
     └── fixtures/            Test data (sample OPF files, etc.)
 ```
 
-## Sidecar File Formats
+## State File Formats
 
-### `tomo-reading-state.json`
+### `.tomo/reading-state/<uuid>.json`
 
 ```json
 {
@@ -134,7 +151,7 @@ src/
 }
 ```
 
-### `tomo-annotations.json`
+### `.tomo/annotations/<uuid>.json`
 
 ```json
 {

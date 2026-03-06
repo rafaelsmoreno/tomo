@@ -1,8 +1,8 @@
 /**
- * Annotations sidecar manager.
+ * Annotations manager.
  *
- * Reads and writes `tomo-annotations.json` files
- * alongside each book in the Calibre library.
+ * Reads and writes `.tomo/annotations/<uuid>.json` files
+ * at the Calibre library root.
  *
  * TODO: Implement read/write logic
  */

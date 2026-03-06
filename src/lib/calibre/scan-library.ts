@@ -8,8 +8,8 @@
  *         metadata.opf
  *         cover.jpg
  *         Book.epub
- *         tomo-reading-state.json   <- our sidecar
- *         tomo-annotations.json     <- our sidecar
+ *
+ * Tomo state lives in .tomo/ at library root (not per-book).
  *
  * Discovers all books, parses metadata.opf, and loads
  * any existing Tomo sidecar files.
