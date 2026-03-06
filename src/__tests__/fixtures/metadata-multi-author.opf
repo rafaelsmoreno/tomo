@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<package xmlns="http://www.idpf.org/2007/opf" unique-identifier="uuid_id" version="2.0">
+    <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
+        <dc:identifier opf:scheme="calibre" id="calibre_id">789</dc:identifier>
+        <dc:identifier opf:scheme="uuid" id="uuid_id">11111111-2222-3333-4444-555555555555</dc:identifier>
+        <dc:title>Good Omens: The Nice and Accurate Prophecies of Agnes Nutter, Witch</dc:title>
+        <dc:creator opf:file-as="Gaiman, Neil &amp; Pratchett, Terry" opf:role="aut">Neil Gaiman</dc:creator>
+        <dc:creator opf:file-as="Gaiman, Neil &amp; Pratchett, Terry" opf:role="aut">Terry Pratchett</dc:creator>
+        <dc:contributor opf:file-as="calibre" opf:role="bkp">calibre (7.0.0) [https://calibre-ebook.com]</dc:contributor>
+        <dc:date>1990-05-10T00:00:00+00:00</dc:date>
+        <dc:description>&lt;p&gt;The world will end on Saturday. Next Saturday. Just before dinner, according to The Nice and Accurate Prophecies of Agnes Nutter, Witch, the world's only completely accurate book of prophecies.&lt;/p&gt;</dc:description>
+        <dc:publisher>Workman Publishing</dc:publisher>
+        <dc:identifier opf:scheme="ISBN">9780060853983</dc:identifier>
+        <dc:language>eng</dc:language>
+        <dc:subject>Fantasy</dc:subject>
+        <dc:subject>Humor</dc:subject>
+        <dc:subject>Fiction</dc:subject>
+        <meta name="calibre:rating" content="8.0"/>
+        <meta name="calibre:timestamp" content="2025-06-20T14:00:00+00:00"/>
+        <meta name="calibre:title_sort" content="Good Omens: The Nice and Accurate Prophecies of Agnes Nutter, Witch"/>
+    </metadata>
+    <guide>
+        <reference type="cover" title="Cover" href="cover.jpg"/>
+    </guide>
+</package>

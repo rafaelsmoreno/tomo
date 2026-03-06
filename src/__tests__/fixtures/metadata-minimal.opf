@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<package xmlns="http://www.idpf.org/2007/opf" unique-identifier="uuid_id" version="2.0">
+    <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
+        <dc:identifier opf:scheme="calibre" id="calibre_id">110</dc:identifier>
+        <dc:identifier opf:scheme="uuid" id="uuid_id">f7bac407-648d-4bed-bc86-51a51a0df9fe</dc:identifier>
+        <dc:title>THE INTELLECTUAL LIFE, Its Spirit, Conditions, Methods - Sertillanges</dc:title>
+        <dc:creator opf:file-as="Sertillanges, A.D." opf:role="aut">A.D. Sertillanges</dc:creator>
+        <dc:contributor opf:file-as="calibre" opf:role="bkp">calibre (9.4.0) [https://calibre-ebook.com]</dc:contributor>
+        <dc:date>2024-03-18T00:00:00+00:00</dc:date>
+        <dc:publisher>Lebooks Editora</dc:publisher>
+        <dc:identifier opf:scheme="MOBI-ASIN">B0CYF9PW81</dc:identifier>
+        <dc:language>eng</dc:language>
+        <meta name="calibre:timestamp" content="2026-03-03T18:31:52+00:00"/>
+        <meta name="calibre:title_sort" content="INTELLECTUAL LIFE, Its Spirit, Conditions, Methods - Sertillanges, THE"/>
+    </metadata>
+    <guide>
+        <reference type="cover" title="Cover" href="cover.jpg"/>
+    </guide>
+</package>
