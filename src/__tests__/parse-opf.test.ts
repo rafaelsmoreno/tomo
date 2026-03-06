@@ -238,6 +238,115 @@ describe("parseOpf — core fields", () => {
     });
   });
 
+  describe("identifiers", () => {
+    it("extracts all non-calibre, non-uuid identifiers from metadata-full.opf", () => {
+      const result = parseOpf(readFixture("metadata-full.opf"));
+      expect(result.identifiers).toEqual({
+        isbn: "9780765326355",
+        amazon: "076532635X",
+        goodreads: "7235533",
+        google: "QaBmAgAAQBAJ",
+      });
+    });
+
+    it("extracts uuid separately", () => {
+      const result = parseOpf(readFixture("metadata-full.opf"));
+      expect(result.uuid).toBe("a1b2c3d4-e5f6-7890-abcd-ef1234567890");
+    });
+
+    it("extracts MOBI-ASIN from metadata-minimal.opf", () => {
+      const result = parseOpf(readFixture("metadata-minimal.opf"));
+      expect(result.identifiers).toEqual({
+        "mobi-asin": "B0CYF9PW81",
+      });
+    });
+
+    it("extracts uuid from metadata-minimal.opf", () => {
+      const result = parseOpf(readFixture("metadata-minimal.opf"));
+      expect(result.uuid).toBe("f7bac407-648d-4bed-bc86-51a51a0df9fe");
+    });
+
+    it("extracts ISBN from metadata-multi-author.opf", () => {
+      const result = parseOpf(readFixture("metadata-multi-author.opf"));
+      expect(result.identifiers).toEqual({
+        isbn: "9780060853983",
+      });
+    });
+
+    it("returns empty identifiers when only calibre and uuid exist", () => {
+      const result = parseOpf(readFixture("metadata-empty.opf"));
+      expect(result.identifiers).toEqual({});
+    });
+
+    it("returns uuid even from metadata-empty.opf", () => {
+      const result = parseOpf(readFixture("metadata-empty.opf"));
+      expect(result.uuid).toBe("00000000-0000-0000-0000-000000000000");
+    });
+
+    it("returns undefined uuid when no uuid-scheme identifier exists", () => {
+      const xml = `<?xml version='1.0' encoding='utf-8'?>
+        <package xmlns="http://www.idpf.org/2007/opf" version="2.0">
+          <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
+            <dc:title>No UUID</dc:title>
+          </metadata>
+        </package>`;
+      const result = parseOpf(xml);
+      expect(result.uuid).toBeUndefined();
+      expect(result.identifiers).toEqual({});
+    });
+  });
+
+  describe("cover detection", () => {
+    it("detects cover from <guide> reference in metadata-full.opf", () => {
+      const result = parseOpf(readFixture("metadata-full.opf"));
+      expect(result.coverHref).toBe("cover.jpg");
+    });
+
+    it("detects cover from <guide> reference in metadata-minimal.opf", () => {
+      const result = parseOpf(readFixture("metadata-minimal.opf"));
+      expect(result.coverHref).toBe("cover.jpg");
+    });
+
+    it("detects cover from <manifest> via meta name='cover'", () => {
+      const result = parseOpf(readFixture("metadata-manifest-cover.opf"));
+      expect(result.coverHref).toBe("images/cover.png");
+    });
+
+    it("returns undefined when no cover info exists", () => {
+      const result = parseOpf(readFixture("metadata-empty.opf"));
+      expect(result.coverHref).toBeUndefined();
+    });
+
+    it("returns undefined coverHref for inline XML with no guide or manifest", () => {
+      const xml = `<?xml version='1.0' encoding='utf-8'?>
+        <package xmlns="http://www.idpf.org/2007/opf" version="2.0">
+          <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
+            <dc:title>No Cover</dc:title>
+          </metadata>
+        </package>`;
+      const result = parseOpf(xml);
+      expect(result.coverHref).toBeUndefined();
+    });
+
+    it("prefers <guide> over <manifest> when both exist", () => {
+      const xml = `<?xml version='1.0' encoding='utf-8'?>
+        <package xmlns="http://www.idpf.org/2007/opf" version="2.0">
+          <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
+            <dc:title>Both Cover Sources</dc:title>
+            <meta name="cover" content="cover-img"/>
+          </metadata>
+          <manifest>
+            <item id="cover-img" href="images/manifest-cover.png" media-type="image/png"/>
+          </manifest>
+          <guide>
+            <reference type="cover" title="Cover" href="guide-cover.jpg"/>
+          </guide>
+        </package>`;
+      const result = parseOpf(xml);
+      expect(result.coverHref).toBe("guide-cover.jpg");
+    });
+  });
+
   describe("error handling", () => {
     it("throws 'no <package>' when XML has no package element", () => {
       // fast-xml-parser is lenient — it parses invalid XML into nonsense

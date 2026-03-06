@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<package xmlns="http://www.idpf.org/2007/opf" unique-identifier="uuid_id" version="2.0">
+    <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
+        <dc:identifier opf:scheme="calibre" id="calibre_id">55</dc:identifier>
+        <dc:identifier opf:scheme="uuid" id="uuid_id">abcd1234-5678-9abc-def0-123456789abc</dc:identifier>
+        <dc:title>Manifest Cover Test</dc:title>
+        <dc:creator opf:file-as="Author, Test" opf:role="aut">Test Author</dc:creator>
+        <dc:language>eng</dc:language>
+        <meta name="cover" content="cover-image"/>
+        <meta name="calibre:timestamp" content="2025-06-01T00:00:00+00:00"/>
+    </metadata>
+    <manifest>
+        <item id="cover-image" href="images/cover.png" media-type="image/png"/>
+        <item id="titlepage" href="titlepage.xhtml" media-type="application/xhtml+xml"/>
+    </manifest>
+</package>
